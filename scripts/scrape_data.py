@@ -18,7 +18,7 @@ def plot_series(time, series, format="-", start=0, end=None):
     plt.grid(False)
 
 class GasPipeline:
-    def __init__(self, year_start = 1976, api_key = config.api_key, url = config.url, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
+    def __init__(self, year_start = 1976, api_key = config.API_KEY, url = config.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
         self.api_key = api_key
         self.url = url
         self.year_start = year_start
