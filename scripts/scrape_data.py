@@ -2,14 +2,23 @@
 # Start with 1976
 # increment until current year (2022)
 # 500 daily call limit
+import matplotlib.pyplot as plt
 from datetime import datetime
 from dateutil import parser
+import pandas as pd
 import requests
 import pickle
-import params
+import config
+
+def plot_series(time, series, format="-", start=0, end=None):
+    """Helper function to plot our time series"""
+    plt.plot(time[start:end], series[start:end], format)
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.grid(False)
 
 class GasPipeline:
-    def __init__(self, year_start = 1976, api_key = params.api_key, url = params.url, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
+    def __init__(self, year_start = 1976, api_key = config.api_key, url = config.url, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
         self.api_key = api_key
         self.url = url
         self.year_start = year_start
@@ -60,3 +69,8 @@ etl = GasPipeline()
 data_dict = etl.get_raw_data()
 etl.create_date_column()
 etl.save_pickle()
+
+df = pd.DataFrame(data=data_dict)
+df.sort_values(by=["year", "period"], axis=0, ascending=True, inplace=True)
+df.reset_index(drop=True, inplace=True)
+df.to_csv(path_or_buf="../data/processed/fuel_prices.csv", index=False)
