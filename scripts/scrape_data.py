@@ -10,13 +10,6 @@ import requests
 import pickle
 import config
 
-def plot_series(time, series, format="-", start=0, end=None):
-    """Helper function to plot our time series"""
-    plt.plot(time[start:end], series[start:end], format)
-    plt.xlabel('Time')
-    plt.ylabel('Value')
-    plt.grid(False)
-
 class GasPipeline:
     def __init__(self, year_start = 1976, api_key = config.API_KEY, url = config.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
         self.api_key = api_key
@@ -64,12 +57,13 @@ class GasPipeline:
     def load_pickle(self, data_dict_filename = "../data/raw/fuel_prices.p"):
         return pickle.load(open(data_dict_filename, "rb"))
 
-# Run pipeline
+# Run pipeline to get raw data and save it
 etl = GasPipeline()
 data_dict = etl.get_raw_data()
 etl.create_date_column()
 etl.save_pickle()
 
+# Process data
 df = pd.DataFrame(data=data_dict)
 df.sort_values(by=["year", "period"], axis=0, ascending=True, inplace=True)
 df.reset_index(drop=True, inplace=True)
