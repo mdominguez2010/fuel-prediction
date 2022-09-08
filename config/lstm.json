@@ -1,0 +1,11 @@
+{
+    "model": "random_forest",
+    "train_data_path": "data/processed/cleaned_train_data.json",
+    "val_data_path": "data/processed/cleaned_val_data.json",
+    "test_data_path": "data/processed/cleaned_test_data.json",
+    "model_output_path": "model_checkpoints/lstm",
+    "evaluate": false,
+    "params": {
+        
+    }
+}

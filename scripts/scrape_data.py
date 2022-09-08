@@ -57,14 +57,31 @@ class GasPipeline:
     def load_pickle(self, data_dict_filename = "../data/raw/fuel_prices.p"):
         return pickle.load(open(data_dict_filename, "rb"))
 
+def train_val_split(series: list) -> list:
+    """Divide the time series into training and validation set"""
+    time_step = int(round(len(series) * 0.8, 0))
+    series_train = series[:time_step]
+    series_valid = series[time_step:]
+    
+    return series_train, series_valid
+
 # Run pipeline to get raw data and save it
 etl = GasPipeline()
 data_dict = etl.get_raw_data()
 etl.create_date_column()
-etl.save_pickle()
 
-# Process data
+# Organize data
 df = pd.DataFrame(data=data_dict)
 df.sort_values(by=["year", "period"], axis=0, ascending=True, inplace=True)
+df = df[["date", "value"]]
 df.reset_index(drop=True, inplace=True)
-df.to_csv(path_or_buf="../data/processed/fuel_prices.csv", index=False)
+df["date"] = pd.to_datetime(df["date"], format = "%Y/%m/%d", unit = 'D')
+
+##### Split train and validate sets #####
+series_train, series_valid = train_val_split(series = df)
+print("series_train shape", series_train.shape)
+print(series_train[:5])
+print("series_valid shape", series_valid.shape)
+print(series_valid[:5])
+series_train.to_csv(path_or_buf="../data/processed/series_train.csv", index = False)
+series_train.to_csv(path_or_buf="../data/processed/series_valid.csv", index = False)
