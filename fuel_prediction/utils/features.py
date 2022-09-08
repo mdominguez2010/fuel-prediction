@@ -37,3 +37,6 @@ class Datapoint(BaseModel):
 
 def extract_time_series(datapoints: Dict[Datapoint]) -> List[Dict]:
     pass
+
+def clean_data(datapoints: List[Dict]) -> List[Dict]:
+    pass
