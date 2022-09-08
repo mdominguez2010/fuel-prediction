@@ -10,6 +10,7 @@ from typing import List
 from typing import Optional
 
 import numpy as np
+from datetime import datetime
 from pydantic import BaseModel
 
 from sklearn.pipeline import FeatureUnion
@@ -31,5 +32,8 @@ logging.basicConfig(
 LOGGER = logging.getLogger(__name__)
 
 class Datapoint(BaseModel):
-    date: numpy.datetime64
+    date: datetime
     value: float
+
+def extract_time_series(datapoints: Dict[Datapoint]) -> List[Dict]:
+    pass

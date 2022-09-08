@@ -8,10 +8,10 @@ from dateutil import parser
 import pandas as pd
 import requests
 import pickle
-import config
+import keys
 
 class GasPipeline:
-    def __init__(self, year_start = 1976, api_key = config.API_KEY, url = config.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
+    def __init__(self, year_start = 1976, api_key = keys.API_KEY, url = keys.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
         self.api_key = api_key
         self.url = url
         self.year_start = year_start
