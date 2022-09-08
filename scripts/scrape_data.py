@@ -77,7 +77,7 @@ df = df[["date", "value"]]
 df.reset_index(drop=True, inplace=True)
 df["date"] = pd.to_datetime(df["date"], format = "%Y/%m/%d", unit = 'D')
 
-##### Split train and validate sets #####
+# Split train and validate sets
 series_train, series_valid = train_val_split(series = df)
 print("series_train shape", series_train.shape)
 print(series_train[:5])
