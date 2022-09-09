@@ -45,7 +45,7 @@ if __name__ == "__main__":
     series_val.to_csv(path_or_buf="../data/raw/series_val.csv", index = False)
     series_test.to_csv(path_or_buf="../data/raw/series_test.csv", index = False)
 
-    # Process for data ingestion (ensures immutability)
+    # Ensures immutiblity
     args = read_args()
     train_datapoints = read_datapoints(args.train_data_path)
     val_datapoints = read_datapoints(args.val_data_path)
@@ -59,5 +59,3 @@ if __name__ == "__main__":
 
     with open(os.path.join(args.output_dir, "cleaned_test_data.json"), "w") as f:
         json.dump(test_datapoints, f)
-
-    
