@@ -6,6 +6,8 @@ import os
 from typing import Dict
 from typing import List
 
+from fuel_prediction.utils.features import clean_and_organize_data, G, windowed_dataset, train_test_val_split
+
 def read_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train-data-path", type = str)
@@ -27,6 +29,23 @@ def read_datapoints(datapath: str) -> List[Dict]:
         return [row for row in reader]
 
 if __name__ == "__main__":
+    # Load serialized object
+    data_dict = pickle.load(open("../data/raw/fuel_prices.p", "rb"))
+
+    # Clean/organize
+    df = clean_and_organize_data(data_dict)
+
+    # Create dataset with time windows for tf model
+    dataset = windowed_dataset(G.SERIES.value.values)
+    pickle.dump(self.data_dict, open("../data/raw/processed_dataset.p", "wb"))
+
+    # Train/val/test sets
+    series_train, series_val, series_test = train_test_val_split(series = df)
+    series_train.to_csv(path_or_buf="../data/raw/series_train.csv", index = False)
+    series_val.to_csv(path_or_buf="../data/raw/series_val.csv", index = False)
+    series_test.to_csv(path_or_buf="../data/raw/series_test.csv", index = False)
+
+    # Process for data ingestion (ensures immutability)
     args = read_args()
     train_datapoints = read_datapoints(args.train_data_path)
     val_datapoints = read_datapoints(args.val_data_path)

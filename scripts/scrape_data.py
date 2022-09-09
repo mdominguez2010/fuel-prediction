@@ -9,10 +9,9 @@ from dateutil import parser
 import pandas as pd
 import requests
 import pickle
-import keys
 
 class GasPipeline:
-    def __init__(self, year_start = 1976, api_key = keys.API_KEY, url = keys.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
+    def __init__(self, year_start = 1976, api_key = "7e2ef7c028774d9db144d3f1c78b1023", url = "https://api.bls.gov/publicAPI/v2/timeseries/data/", data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
         self.api_key = api_key
         self.url = url
         self.year_start = year_start
@@ -60,35 +59,9 @@ class GasPipeline:
     def load_pickle(self, data_dict_filename = "../data/raw/fuel_prices.p"):
         return pickle.load(open(data_dict_filename, "rb"))
 
-def train_test_val_split(series: list) -> list:
-    """
-    Input: X --> array of features, set aside for validating/testing.
-    Output: Features and target split into train, val and test sets. 
-            Test size = 20%
-            Val size = 20%
-    """
-    series, series_test = train_test_split(series, test_size=0.2, random_state=51, shuffle = False)
-
-    # Split train/validate sets
-    series_train, series_val = train_test_split(series, test_size=0.2, random_state=51, shuffle = False)
-
-    return series_train, series_val, series_test
 
 # Run pipeline
 etl = GasPipeline()
 data_dict = etl.get_raw_data()
 etl.create_date_column()
-
-#######  Move this portion to clean_data function in features.py ##########
-# Organize data
-df = pd.DataFrame(data=data_dict)
-df.sort_values(by=["year", "period"], axis=0, ascending=True, inplace=True)
-df = df[["date", "value"]]
-df.reset_index(drop=True, inplace=True)
-df["date"] = pd.to_datetime(df["date"], format = "%Y/%m/%d", unit = 'D')
-
-# Train/val/test sets
-series_train, series_val, series_test = train_test_val_split(series = df)
-series_train.to_csv(path_or_buf="../data/raw/series_train.csv", index = False)
-series_val.to_csv(path_or_buf="../data/raw/series_val.csv", index = False)
-series_test.to_csv(path_or_buf="../data/raw/series_test.csv", index = False)
+etl.save_pickle()
