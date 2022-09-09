@@ -2,6 +2,7 @@
 # Start with 1976
 # increment until current year (2022)
 # 500 daily call limit
+from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from datetime import datetime
 from dateutil import parser
@@ -11,7 +12,18 @@ import pickle
 import keys
 
 class GasPipeline:
-    def __init__(self, year_start = 1976, api_key = keys.API_KEY, url = keys.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
+    def __init__(
+        self,
+        year_start = 1976,
+        api_key = keys.API_KEY,
+        url = keys.URL,
+        data_dict = {
+            "period": [],
+            "periodName": [],
+            "value": [],
+            "year": [],
+            "date": []
+            }):
         self.api_key = api_key
         self.url = url
         self.year_start = year_start
@@ -57,13 +69,19 @@ class GasPipeline:
     def load_pickle(self, data_dict_filename = "../data/raw/fuel_prices.p"):
         return pickle.load(open(data_dict_filename, "rb"))
 
-def train_val_split(series: list) -> list:
-    """Divide the time series into training and validation set"""
-    time_step = int(round(len(series) * 0.8, 0))
-    series_train = series[:time_step]
-    series_valid = series[time_step:]
-    
-    return series_train, series_valid
+def train_test_val_split(series: list) -> list:
+    """
+    Input: X --> array of features, set aside for validating/testing.
+    Output: Features and target split into train, val and test sets. 
+            Test size = 20%
+            Val size = 20%
+    """
+    series, series_test = train_test_split(series, test_size=0.2, random_state=51, shuffle = False)
+
+    # Split train/validate sets
+    series_train, series_val = train_test_split(series, test_size=0.2, random_state=51, shuffle = False)
+
+    return series_train, series_val, series_test
 
 # Run pipeline to get raw data and save it
 etl = GasPipeline()
@@ -78,10 +96,7 @@ df.reset_index(drop=True, inplace=True)
 df["date"] = pd.to_datetime(df["date"], format = "%Y/%m/%d", unit = 'D')
 
 # Split train and validate sets
-series_train, series_valid = train_val_split(series = df)
-print("series_train shape", series_train.shape)
-print(series_train[:5])
-print("series_valid shape", series_valid.shape)
-print(series_valid[:5])
+series_train, series_val, series_test = train_test_val_split(series = df)
 series_train.to_csv(path_or_buf="../data/processed/series_train.csv", index = False)
-series_train.to_csv(path_or_buf="../data/processed/series_valid.csv", index = False)
+series_val.to_csv(path_or_buf="../data/processed/series_val.csv", index = False)
+series_test.to_csv(path_or_buf="../data/processed/series_test.csv", index = False)
