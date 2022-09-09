@@ -74,12 +74,12 @@ def train_test_val_split(series: list) -> list:
 
     return series_train, series_val, series_test
 
-# Run pipeline to get raw data and save it
+# Run pipeline
 etl = GasPipeline()
 data_dict = etl.get_raw_data()
 etl.create_date_column()
 
-#######  Move this portion to clean_data function in features.py
+#######  Move this portion to clean_data function in features.py ##########
 # Organize data
 df = pd.DataFrame(data=data_dict)
 df.sort_values(by=["year", "period"], axis=0, ascending=True, inplace=True)
@@ -87,7 +87,7 @@ df = df[["date", "value"]]
 df.reset_index(drop=True, inplace=True)
 df["date"] = pd.to_datetime(df["date"], format = "%Y/%m/%d", unit = 'D')
 
-# Split train and validate sets
+# Train/val/test sets
 series_train, series_val, series_test = train_test_val_split(series = df)
 series_train.to_csv(path_or_buf="../data/raw/series_train.csv", index = False)
 series_val.to_csv(path_or_buf="../data/raw/series_val.csv", index = False)

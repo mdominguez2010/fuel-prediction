@@ -18,8 +18,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 
 ######## TODO: BUILD ########
-# Determine if extract_time_series is necessary
-# Use clean_data to clean csv using pandas
+# May not need this page
 #############################
 
 logging.basicConfig(

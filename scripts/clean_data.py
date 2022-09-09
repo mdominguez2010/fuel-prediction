@@ -6,8 +6,6 @@ import os
 from typing import Dict
 from typing import List
 
-from fuel_prediction.utils.features import clean_data
-
 def read_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train-data-path", type = str)
