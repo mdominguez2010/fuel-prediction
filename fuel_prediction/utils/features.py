@@ -18,10 +18,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 
 ######## TODO: BUILD ########
-# from fake_news.utils.constants import CANONICAL_SPEAKER_TITLES
-# from fake_news.utils.constants import CANONICAL_STATE
-# from fake_news.utils.constants import PARTY_AFFILIATIONS
-# from fake_news.utils.constants import SIX_WAY_LABEL_TO_BINARY
+# Determine if extract_time_series is necessary
+# Use clean_data to clean csv using pandas
 #############################
 
 logging.basicConfig(

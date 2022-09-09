@@ -79,6 +79,7 @@ etl = GasPipeline()
 data_dict = etl.get_raw_data()
 etl.create_date_column()
 
+#######  Move this portion to clean_data function in features.py
 # Organize data
 df = pd.DataFrame(data=data_dict)
 df.sort_values(by=["year", "period"], axis=0, ascending=True, inplace=True)
