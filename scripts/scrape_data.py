@@ -12,18 +12,7 @@ import pickle
 import keys
 
 class GasPipeline:
-    def __init__(
-        self,
-        year_start = 1976,
-        api_key = keys.API_KEY,
-        url = keys.URL,
-        data_dict = {
-            "period": [],
-            "periodName": [],
-            "value": [],
-            "year": [],
-            "date": []
-            }):
+    def __init__(self, year_start = 1976, api_key = keys.API_KEY, url = keys.URL, data_dict = {"period": [], "periodName": [], "value": [], "year": [], "date": []}):
         self.api_key = api_key
         self.url = url
         self.year_start = year_start
@@ -39,10 +28,12 @@ class GasPipeline:
                 "startyear": "{}".format(self.year_start),
                 "endyear": "{}".format(self.year_start + 1)
                 }
-
-            response = requests.post(url=self.url, data=payload)
-            raw_data = response.json()
-            raw_data = raw_data["Results"]["series"][0]["data"]
+            try:
+                response = requests.post(url=self.url, data=payload)
+                raw_data = response.json()
+                raw_data = raw_data["Results"]["series"][0]["data"]
+            except KeyError:
+                print(raw_data['message'])
 
             for element in raw_data:
                 for item in element:
@@ -97,6 +88,6 @@ df["date"] = pd.to_datetime(df["date"], format = "%Y/%m/%d", unit = 'D')
 
 # Split train and validate sets
 series_train, series_val, series_test = train_test_val_split(series = df)
-series_train.to_csv(path_or_buf="../data/processed/series_train.csv", index = False)
-series_val.to_csv(path_or_buf="../data/processed/series_val.csv", index = False)
-series_test.to_csv(path_or_buf="../data/processed/series_test.csv", index = False)
+series_train.to_csv(path_or_buf="../data/raw/series_train.csv", index = False)
+series_val.to_csv(path_or_buf="../data/raw/series_val.csv", index = False)
+series_test.to_csv(path_or_buf="../data/raw/series_test.csv", index = False)
