@@ -1,12 +1,16 @@
 # export PYTHONPATH="${PYTHONPATH}:/home/md_ghsd/fuel-prediction"
+from dataclasses import dataclass
+import tensorflow as tf
+import pandas as pd
 import argparse
+import pickle
 import csv
 import json
 import os
 from typing import Dict
 from typing import List
 
-from fuel_prediction.utils.features import clean_and_organize_data, G, windowed_dataset, train_test_val_split
+from fuel_prediction.utils.features import clean_and_organize_data, windowed_dataset, train_test_val_split
 
 def read_args():
     parser = argparse.ArgumentParser()
@@ -35,8 +39,15 @@ if __name__ == "__main__":
     # Clean/organize
     df = clean_and_organize_data(data_dict)
 
+    @dataclass
+    class G:
+        SERIES = df
+        WINDOW_SIZE = 20
+        BATCH_SIZE = 5
+        SHUFFLE_BUFFER_SIZE = 1000
+
     # Create dataset with time windows for tf model
-    dataset = windowed_dataset(G.SERIES.value.values)
+    dataset = windowed_dataset(series = G.SERIES.value.values, window_size = G.WINDOW_SIZE, batch_size = G.BATCH_SIZE, shuffle_buffer = G.SHUFFLE_BUFFER_SIZE)
     pickle.dump(self.data_dict, open("../data/raw/processed_dataset.p", "wb"))
 
     # Train/val/test sets

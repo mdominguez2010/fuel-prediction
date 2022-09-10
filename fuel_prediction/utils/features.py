@@ -6,12 +6,14 @@ import pickle
 from copy import deepcopy
 from functools import partial
 from dataclasses import dataclass
+import tensorflow as tf
 
 from typing import Dict
 from typing import List
 from typing import Optional
 
 import numpy as np
+import pandas as pd
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -42,14 +44,7 @@ def clean_and_organize_data(data_dict: dict) -> list:
     return df
 
 
-@dataclass
-class G:
-    SERIES = df
-    WINDOW_SIZE = 20
-    BATCH_SIZE = 5
-    SHUFFLE_BUFFER_SIZE = 1000
-
-def windowed_dataset(series, window_size=G.WINDOW_SIZE, batch_size=G.BATCH_SIZE, shuffle_buffer=G.SHUFFLE_BUFFER_SIZE):
+def windowed_dataset(series: list, window_size: int, batch_size: int, shuffle_buffer: int) -> tensorflow.python.data.ops.dataset_ops.PrefetchDataset:
 	"""
 	We create time windows to create X and y features.
 	For example, if we choose a window of 20, we will create a dataset formed by 20 points as X
