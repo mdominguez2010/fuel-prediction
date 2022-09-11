@@ -20,6 +20,7 @@ from pydantic import BaseModel
 from sklearn.pipeline import FeatureUnion
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
+from sklearn.model_selection import train_test_split
 
 ######## TODO: BUILD ########
 # Do we need this?????
@@ -43,21 +44,21 @@ def clean_and_organize_data(data_dict: dict) -> list:
     return df
 
 
-def windowed_dataset(series: list, window_size: int, batch_size: int, shuffle_buffer: int) -> tf.python.data.ops.dataset_ops.PrefetchDataset:
+def windowed_dataset(series: list, window_size: int, batch_size: int, shuffle_buffer: int) -> list:
 	"""
 	We create time windows to create X and y features.
 	For example, if we choose a window of 20, we will create a dataset formed by 20 points as X
 	"""
-    LOGGER.info("Building windowed dataset...")
-    dataset = tf.data.Dataset.from_tensor_slices(series)
-    dataset = dataset.window(window_size + 1, shift=1, drop_remainder=True)
-    dataset = dataset.flat_map(lambda window: window.batch(window_size + 1))
-    dataset = dataset.shuffle(shuffle_buffer)
-    dataset = dataset.map(lambda window: (window[:-1], window[-1]))
-    dataset = dataset.batch(batch_size).prefetch(1)
-    return dataset
+	LOGGER.info("BUilding windowed dataset...")
+	dataset = tf.data.Dataset.from_tensor_slices(series)
+	dataset = dataset.window(window_size + 1, shift=1, drop_remainder=True)
+	dataset = dataset.flat_map(lambda window: window.batch(window_size + 1))
+	dataset = dataset.shuffle(shuffle_buffer)
+	dataset = dataset.map(lambda window: (window[:-1], window[-1]))
+	dataset = dataset.batch(batch_size).prefetch(1)
+	return dataset
 
-
+    
 def train_test_val_split(series: list) -> list:
     """
     Input: X --> array of features, set aside for validating/testing.

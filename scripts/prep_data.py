@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     # Create dataset with time windows for tf model
     dataset = windowed_dataset(series = G.SERIES.value.values, window_size = G.WINDOW_SIZE, batch_size = G.BATCH_SIZE, shuffle_buffer = G.SHUFFLE_BUFFER_SIZE)
-    pickle.dump(self.data_dict, open("../data/raw/processed_dataset.p", "wb"))
+    pickle.dump(data_dict, open("../data/processed/cleaned_dataset.p", "wb"))
 
     # Train/val/test sets
     series_train, series_val, series_test = train_test_val_split(series = df)
